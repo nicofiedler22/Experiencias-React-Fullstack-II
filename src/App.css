@@ -1,0 +1,146 @@
+body{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: rgb(139, 202, 218);
+    color: rgb(45, 90, 115);
+    padding: 0;
+    margin: 0;
+}
+
+#encabezado{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: rgb(35, 115, 150);
+    color: rgba(200, 230, 245, 0.85);
+    text-align: center;
+    padding: 1px;
+}
+
+#menu-principal ul{
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+
+#menu-principal ul li a{
+    text-decoration: none;
+    color: white;
+    background-color: rgb(55, 135, 160);
+    padding: 6px;
+    border-radius: 6px;
+}
+
+#contenido{
+    max-width: 1000px;
+    margin: auto;
+    text-align: center;
+}
+
+#contacto{
+    max-width: 1000px;
+    margin: auto;
+    text-align: left;
+    color: black;
+}
+
+.seccion{
+    background-color: rgb(129, 167, 192);
+    padding: 5px;
+}
+
+.espacio-imagen img{
+    width: 100%;
+    height: 150px;
+    border-radius: 6px; 
+}
+
+.tarjeta {
+    height: auto;
+    width: auto;
+    border: 7px solid rgb(30, 112, 145);
+    border-radius: 10px;
+}
+
+.tarjeta h2{
+    color:black;
+    height: auto;
+    width: auto;
+    border: 3px solid black;
+    margin: 0;
+    background-color: rgb(51, 127, 177);
+    border-radius: 5px;
+}
+
+.contenido-tarjeta {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 10px;
+}
+
+.contenido-tarjeta img {
+    width: 210px;
+    height: 210px;
+    border-radius: 6px;
+    border: 3px solid black;
+}
+
+.contenido-tarjeta p {
+    margin: auto;
+    text-align: left;
+    font-size:x-large;
+}
+
+#inicio {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+}
+
+#album {
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+#vista, #tacto {
+    background-image: linear-gradient(
+        to right,
+        rgb(129, 167, 192),
+        rgb(150, 190, 205)
+    );
+    transition: 0.3s;
+}
+
+#olfato, #oido {
+    background-image: linear-gradient(
+        to right,
+        rgb(150, 190, 205),
+        rgb(129, 167, 192)
+    );
+    transition: 0.3s;
+}
+
+#gusto {
+    opacity: 0.98;
+    line-height: 1.4;
+    text-transform: none;
+}
+
+#pie {
+    cursor: default;
+}
+
+.galeria a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.enlace-producto {
+    text-decoration: none;
+    color: inherit;
+}
+
+/***************************************************************************/
+
+
+
+
+
