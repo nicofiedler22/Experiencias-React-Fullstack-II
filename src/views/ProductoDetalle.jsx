@@ -1,100 +1,100 @@
-import { Link, useParams } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import Header from '../components/organisms/Header';
+import Footer from '../components/organisms/Footer';
+import { AppContext } from '../context/AppContext';
+import Boton from '../components/atoms/Boton';
 
-import vista from '../assets/img/vista.jpg';
-import tacto from '../assets/img/tacto.jpg';
-import olfato from '../assets/img/Olfato.jpg';
-import oido from '../assets/img/oido.jpg';
-import gusto from '../assets/img/gusto.jpg';
+// En esta vista mostramos la ficha detallada de un producto seleccionado.
+// Usamos estados locales con useState para calcular el subtotal en tiempo real según la cantidad.
+export default function ProductoDetalle() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { productos, agregarAlCarrito, usuario } = useContext(AppContext);
+  const [cantidad, setCantidad] = useState(1);
+  const [mensaje, setMensaje] = useState('');
 
-const productos = [
-    {
-        id: 1,
-        imagen: vista,
-        nombre: 'Visuales',
-        precio: 15000,
-        descripcion:
-            'Explora experiencias diseñadas para despertar tu mirada. Disfruta de recorridos, paisajes, obras y escenarios cuidadosamente preparados para sorprenderte con colores, formas, luces y perspectivas.'
-    },
-    {
-        id: 2,
-        imagen: tacto,
-        nombre: 'Táctiles',
-        precio: 12000,
-        descripcion:
-            'Descubre experiencias donde tus manos serán las protagonistas. Explora diferentes texturas, temperaturas, materiales y superficies.'
-    },
-    {
-        id: 3,
-        imagen: olfato,
-        nombre: 'Olfativas',
-        precio: 10000,
-        descripcion:
-            'Déjate transportar por los aromas. Experimenta fragancias, esencias y ambientes cuidadosamente seleccionados.'
-    },
-    {
-        id: 4,
-        imagen: oido,
-        nombre: 'Auditivas',
-        precio: 18000,
-        descripcion:
-            'Cierra los ojos y déjate llevar por los sonidos. Disfruta de experiencias creadas a partir de música, sonidos naturales y ambientes.'
-    },
-    {
-        id: 5,
-        imagen: gusto,
-        nombre: 'Gustativas',
-        precio: 20000,
-        descripcion:
-            'Descubre un mundo de sabores y sensaciones. Explora degustaciones, combinaciones inesperadas y preparaciones cuidadosamente seleccionadas.'
-    }
-];
+  // Buscamos el producto coincidente en nuestra lista global mediante su ID
+  const producto = productos.find((p) => p.id === Number(id));
 
-function ProductoDetalle() {
-    const { id } = useParams();
-
-    const producto = productos.find(
-        (producto) => producto.id === Number(id)
-    );
-
-    if (!producto) {
-        return (
-            <main>
-                <h1>Producto no encontrado</h1>
-
-                <Link to="/productos">
-                    Volver a productos
-                </Link>
-            </main>
-        );
-    }
-
+  if (!producto) {
     return (
-        <main>
-            <h1>{producto.nombre}</h1>
-
-            <img
-                src={producto.imagen}
-                alt={producto.nombre}
-                width="400"
-            />
-
-            <p>{producto.descripcion}</p>
-
-            <h2>
-                Precio: ${producto.precio.toLocaleString('es-CL')}
-            </h2>
-
-            <Link to="/productos">
-                Volver a productos
-            </Link>
-
-            <br />
-
-            <Link to="/">
-                Volver al inicio
-            </Link>
+      <>
+        <Header subtitulo="PRODUCTO NO ENCONTRADO" />
+        <main id="contenido" style={{ padding: '60px 20px' }}>
+          <h2>El producto solicitado no existe o fue retirado del catálogo.</h2>
+          <br />
+          <Link to="/productos" className="link-vinculo">Volver al Catálogo</Link>
         </main>
+        <Footer />
+      </>
     );
-}
+  }
 
-export default ProductoDetalle;
+  // Agregamos al carrito la cantidad de unidades seleccionadas por el usuario
+  const handleAgregar = () => {
+    if (!usuario) {
+      alert('Debes iniciar sesión como Cliente para armar un pedido de gas.');
+      navigate('/login');
+      return;
+    }
+
+    if (usuario.rol === 'admin') {
+      alert('Modo Administrador: Tienes permisos para editar este producto en el panel, no para comprarlo.');
+      return;
+    }
+
+    for (let i = 0; i < cantidad; i++) {
+      agregarAlCarrito(producto);
+    }
+    setMensaje(`¡Se agregaron ${cantidad} unidad(es) de ${producto.nombre} al carrito!`);
+    setTimeout(() => setMensaje(''), 4000);
+  };
+
+  return (
+    <>
+      <Header subtitulo={producto.nombre} />
+      <main id="contenido">
+        <section id="presentacion" style={{ maxWidth: '700px' }}>
+          <img
+            src={producto.imagen}
+            alt={producto.nombre}
+            style={{ width: '280px', height: '240px', objectFit: 'contain' }}
+          />
+          <h2>{producto.nombre}</h2>
+          <p>{producto.descripcion}</p>
+          <p><strong>Marca:</strong> {producto.marca.toUpperCase()}</p>
+          <p style={{ fontSize: '24px', color: 'rgb(30, 75, 105)' }}>
+            <strong>Precio Unitario: ${producto.precio.toLocaleString('es-CL')}</strong>
+          </p>
+
+          <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+            <label htmlFor="cantidad"><strong>Cantidad a pedir:</strong></label>
+            <input
+              id="cantidad"
+              type="number"
+              min="1"
+              value={cantidad}
+              onChange={(e) => setCantidad(Math.max(1, parseInt(e.target.value) || 1))}
+              style={{ width: '75px', padding: '6px', borderRadius: '10px', border: '2px solid rgb(45, 118, 161)', textAlign: 'center' }}
+            />
+          </div>
+
+          <p style={{ fontSize: '18px' }}>
+            <strong>Subtotal Estimado:</strong> ${(producto.precio * cantidad).toLocaleString('es-CL')}
+          </p>
+
+          {mensaje && <p style={{ color: 'green', fontWeight: 'bold', marginTop: '10px' }}>{mensaje}</p>}
+
+          <div style={{ marginTop: '25px', display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Boton texto="Agregar al Carrito" onClick={handleAgregar} />
+            <Link to={`/productos/${producto.marca}`} className="link-vinculo">
+              Volver a {producto.marca.toUpperCase()}
+            </Link>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}

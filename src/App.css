@@ -1,146 +1,439 @@
-body{
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-color: rgb(139, 202, 218);
-    color: rgb(45, 90, 115);
-    padding: 0;
-    margin: 0;
+/* ==========================================================================
+   ESTILOS GENERALES Y GLOBALES - GAS LICUADO "EL VOLCÁN"
+   En esta sección definimos la paleta corporativa y tipografía original.
+   ========================================================================== */
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  background-color: rgb(244, 247, 250);
+  color: rgb(35, 45, 55);
 }
 
-#encabezado{
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-color: rgb(35, 115, 150);
-    color: rgba(200, 230, 245, 0.85);
-    text-align: center;
-    padding: 1px;
+h1 {
+  color: rgb(30, 75, 105);
 }
 
-#menu-principal ul{
-    list-style: none;
-    display: flex;
-    gap: 30px;
-    justify-content: center;
+h2 {
+  color: rgb(35, 90, 125);
 }
 
-#menu-principal ul li a{
-    text-decoration: none;
-    color: white;
-    background-color: rgb(55, 135, 160);
-    padding: 6px;
-    border-radius: 6px;
+h3 {
+  color: rgb(45, 70, 85);
 }
 
-#contenido{
-    max-width: 1000px;
-    margin: auto;
-    text-align: center;
+p {
+  line-height: 1.5;
 }
 
-#contacto{
-    max-width: 1000px;
-    margin: auto;
-    text-align: left;
-    color: black;
+/* ==========================================================================
+   ENCABEZADO Y NAVEGACIÓN
+   ========================================================================== */
+
+#encabezado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  padding: 25px;
+  border-bottom: 4px solid rgb(45, 118, 161);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
+  text-align: center;
 }
 
-.seccion{
-    background-color: rgb(129, 167, 192);
-    padding: 5px;
+#encabezado h1 {
+  margin-bottom: 10px;
 }
 
-.espacio-imagen img{
-    width: 100%;
-    height: 150px;
-    border-radius: 6px; 
+#encabezado img.logo-principal {
+  max-width: 380px;
+  width: 90%;
+  height: auto;
 }
 
-.tarjeta {
-    height: auto;
-    width: auto;
-    border: 7px solid rgb(30, 112, 145);
-    border-radius: 10px;
+#encabezado #logo-marca {
+  width: 320px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 15px;
+  margin-top: 10px;
 }
 
-.tarjeta h2{
-    color:black;
-    height: auto;
-    width: auto;
-    border: 3px solid black;
-    margin: 0;
-    background-color: rgb(51, 127, 177);
-    border-radius: 5px;
+#vinculos ul,
+#menu-principal ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  padding: 10px 0;
+  margin: 0;
 }
 
-.contenido-tarjeta {
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-    padding: 10px;
+#vinculos ul a,
+.link-vinculo {
+  text-decoration: none;
+  color: rgb(35, 45, 55);
+  background-color: white;
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 2px solid rgb(45, 118, 161);
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.2s ease;
 }
 
-.contenido-tarjeta img {
-    width: 210px;
-    height: 210px;
-    border-radius: 6px;
-    border: 3px solid black;
+#menu-principal ul li a,
+.link-menu {
+  text-decoration: none;
+  color: white;
+  background-color: rgb(45, 118, 161);
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 2px solid rgb(25, 75, 105);
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.2s ease;
 }
 
-.contenido-tarjeta p {
-    margin: auto;
-    text-align: left;
-    font-size:x-large;
+#vinculos ul a:hover,
+.link-vinculo:hover,
+#menu-principal ul li a:hover,
+.link-menu:hover {
+  background-color: rgb(25, 75, 105);
+  color: white;
 }
 
-#inicio {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    letter-spacing: 1px;
+/* ==========================================================================
+   SECCIONES PRINCIPALES DEL HOME
+   ========================================================================== */
+
+#presentacion {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 800px;
+  width: 90%;
+  margin: 40px auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  border: 2px solid rgb(210, 220, 230);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
-#album {
-    overflow: hidden;
-    box-sizing: border-box;
+#presentacion img {
+  max-width: 500px;
+  width: 100%;
+  border-radius: 20px;
+  border: 3px solid rgb(45, 118, 161);
+  margin-top: 15px;
 }
 
-#vista, #tacto {
-    background-image: linear-gradient(
-        to right,
-        rgb(129, 167, 192),
-        rgb(150, 190, 205)
-    );
-    transition: 0.3s;
+#mejoras {
+  text-align: center;
+  background-color: white;
+  padding: 35px 15px;
+  border-top: 3px solid rgb(45, 118, 161);
+  border-bottom: 3px solid rgb(45, 118, 161);
+  margin: 30px 0;
 }
 
-#olfato, #oido {
-    background-image: linear-gradient(
-        to right,
-        rgb(150, 190, 205),
-        rgb(129, 167, 192)
-    );
-    transition: 0.3s;
+#mejoras video {
+  max-width: 500px;
+  width: 90%;
+  border-radius: 20px;
+  border: 3px solid rgb(45, 118, 161);
+  margin-top: 15px;
 }
 
-#gusto {
-    opacity: 0.98;
-    line-height: 1.4;
-    text-transform: none;
+#equipo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  justify-items: center;
+  text-align: center;
+  padding: 30px 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+#equipo h2 {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.card-colaborador {
+  background-color: white;
+  padding: 15px;
+  border: 2px solid rgb(210, 220, 230);
+  border-radius: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
+}
+
+.card-colaborador img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+/* ==========================================================================
+   CATÁLOGOS Y GRILLAS
+   ========================================================================== */
+
+#galerias {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+  justify-items: center;
+  text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#galerias a {
+  text-decoration: none;
+  color: rgb(35, 45, 55);
+  background-color: white;
+  padding: 15px;
+  border-radius: 20px;
+  border: 3px solid rgb(45, 118, 161);
+  box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+}
+
+#galerias a:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+#galerias img {
+  width: 200px;
+  height: 140px;
+  object-fit: cover;
+  border: 2px solid rgb(35, 45, 55);
+  border-radius: 15px;
+}
+
+#productos-gas,
+#productos-extra {
+  text-align: center;
+  margin: 40px auto;
+  width: 92%;
+  max-width: 1200px;
+}
+
+#productos-gas h2,
+#productos-extra h2 {
+  background-color: rgb(45, 118, 161);
+  color: white;
+  padding: 12px;
+  border-radius: 15px;
+}
+
+#catalogo-gas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+#catalogo-extra {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+.producto {
+  text-align: center;
+  border: 3px solid rgb(45, 118, 161);
+  border-radius: 20px;
+  padding: 15px;
+  background-color: white;
+  box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 250px;
+  box-sizing: border-box;
+}
+
+.producto img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 15px;
+}
+
+.producto h3 {
+  color: rgb(35, 90, 125);
+  margin: 10px 0;
+}
+
+/* ==========================================================================
+   FORMULARIOS Y PANELES
+   ========================================================================== */
+
+#contacto,
+.contenedor-formulario {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  max-width: 650px;
+  width: 90%;
+  margin: 40px auto;
+}
+
+#contacto fieldset,
+.contenedor-formulario fieldset {
+  border: 3px solid rgb(45, 118, 161);
+  border-radius: 20px;
+  padding: 30px;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+#contacto legend,
+.contenedor-formulario legend {
+  font-size: 24px;
+  font-weight: bold;
+  color: rgb(35, 90, 125);
+}
+
+.campo-form {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.campo-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.campo-form input,
+.campo-form select,
+.campo-form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 2px solid rgb(160, 175, 185);
+  box-sizing: border-box;
+}
+
+.campo-form input:focus,
+.campo-form select:focus,
+.campo-form textarea:focus {
+  outline: none;
+  border-color: rgb(45, 118, 161);
+}
+
+.btn-volcan {
+  color: white;
+  background-color: rgb(45, 118, 161);
+  padding: 12px 25px;
+  border-radius: 20px;
+  border: 2px solid rgb(25, 75, 105);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-volcan:hover {
+  background-color: rgb(25, 75, 105);
+}
+
+/* ==========================================================================
+   BARRA DE RESUMEN Y PIE DE PÁGINA
+   ========================================================================== */
+
+#compra {
+  text-align: center;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: white;
+  border: 3px solid rgb(45, 118, 161);
+  border-radius: 20px;
+  box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 90%;
 }
 
 #pie {
-    cursor: default;
+  text-align: center;
+  background-color: rgb(35, 55, 70);
+  color: white;
+  padding: 20px;
+  margin-top: 50px;
 }
 
-.galeria a {
-    text-decoration: none;
-    color: inherit;
+/* ==========================================================================
+   AJUSTES RESPONSIVOS PARA DISPOSITIVOS MÓVILES (TELÉFONOS)
+   Garantizamos que en pantallas angostas los catálogos se apilen hacia abajo.
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  #galerias,
+  #catalogo-gas,
+  #catalogo-extra {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+    width: 100% !important;
+    padding: 10px 0 !important;
+  }
+
+  #galerias a,
+  .producto {
+    width: 90% !important;
+    max-width: 320px !important;
+  }
+
+  .contenido-tarjeta {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .contenido-tarjeta img {
+    width: 100% !important;
+    max-width: 220px !important;
+    height: auto !important;
+  }
+
+  #presentacion,
+  #contacto fieldset,
+  .contenedor-formulario fieldset {
+    width: 95% !important;
+    padding: 15px !important;
+  }
+
+  #vinculos ul,
+  #menu-principal ul {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  #vinculos ul a,
+  #menu-principal ul li a,
+  .link-vinculo,
+  .link-menu {
+    width: 80% !important;
+    text-align: center !important;
+  }
 }
-
-.enlace-producto {
-    text-decoration: none;
-    color: inherit;
-}
-
-/***************************************************************************/
-
-
-
-
-
