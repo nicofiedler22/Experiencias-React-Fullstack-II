@@ -1,0 +1,207 @@
+-- ============================================================================
+-- ACTIVIDAD: MODELO DE BASE DE DATOS - GAS LICUADO "EL VOLCÁN"
+-- Gestor: MySQL / MariaDB (XAMPP)
+-- ============================================================================
+
+DROP DATABASE IF EXISTS el_volcan_db;
+CREATE DATABASE el_volcan_db CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
+USE el_volcan_db;
+
+-- ----------------------------------------------------------------------------
+-- 1. TABLA: ROLES (Roles diferenciados y permisos explícitos)
+-- ----------------------------------------------------------------------------
+CREATE TABLE roles (
+    id_rol INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_rol VARCHAR(50) NOT NULL UNIQUE,
+    descripcion_permisos VARCHAR(255) NOT NULL
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 2. TABLA: USUARIOS (Nombres y apellidos desglosados)
+-- ----------------------------------------------------------------------------
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    id_rol INT NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    primer_nombre VARCHAR(50) NOT NULL,
+    segundo_nombre VARCHAR(50) NULL,
+    apellido_paterno VARCHAR(50) NOT NULL,
+    apellido_materno VARCHAR(50) NULL,
+    fecha_nacimiento DATE NOT NULL,
+    cuenta_activa BOOLEAN DEFAULT TRUE,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_usuarios_roles FOREIGN KEY (id_rol) 
+        REFERENCES roles(id_rol) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 3. TABLA: DIRECCIONES_USUARIO (Historial para no perder domicilios anteriores)
+-- ----------------------------------------------------------------------------
+CREATE TABLE direcciones_usuario (
+    id_direccion INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    calle_y_numero VARCHAR(150) NOT NULL,
+    villa_o_poblacion VARCHAR(100) NULL,
+    comuna VARCHAR(50) NOT NULL DEFAULT 'Chillán',
+    ciudad VARCHAR(50) NOT NULL DEFAULT 'Chillán',
+    es_direccion_actual BOOLEAN DEFAULT TRUE,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_direcciones_usuarios FOREIGN KEY (id_usuario) 
+        REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 4. TABLA: PERFILES_CLIENTE (Campos sin ENUM, basados en VARCHAR descriptivos)
+-- ----------------------------------------------------------------------------
+CREATE TABLE perfiles_cliente (
+    id_perfil INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL UNIQUE,
+    descripcion_tipo_consumo VARCHAR(100) NOT NULL DEFAULT 'Residencial (Hogar)',
+    descripcion_horario_entrega VARCHAR(100) NOT NULL DEFAULT 'Mañana (09:00 - 13:00)',
+    descripcion_tipo_valvula VARCHAR(100) NOT NULL DEFAULT 'Válvula Tradicional (Clip)',
+    descripcion_condicion_envase VARCHAR(100) NOT NULL DEFAULT 'Con intercambio de cilindro vacío',
+    telefono_contacto VARCHAR(20) NULL,
+    CONSTRAINT fk_perfiles_usuarios FOREIGN KEY (id_usuario) 
+        REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 5. TABLA: MARCAS
+-- ----------------------------------------------------------------------------
+CREATE TABLE marcas (
+    id_marca INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_marca VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 6. TABLA: CATEGORIAS
+-- ----------------------------------------------------------------------------
+CREATE TABLE categorias (
+    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_categoria VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 7. TABLA: PRODUCTOS (Sintaxis limpia de validaciones sin advertencias)
+-- ----------------------------------------------------------------------------
+CREATE TABLE productos (
+    id_producto INT AUTO_INCREMENT PRIMARY KEY,
+    id_marca INT NOT NULL,
+    id_categoria INT NOT NULL,
+    nombre_producto VARCHAR(120) NOT NULL,
+    descripcion_producto TEXT NULL,
+    precio INT NOT NULL CHECK (precio > 0),
+    imagen_url VARCHAR(255) DEFAULT '/img/logo.png',
+    stock_disponible INT NOT NULL DEFAULT 50 CHECK (stock_disponible >= 0),
+    es_personalizado BOOLEAN DEFAULT FALSE,
+    producto_activo BOOLEAN DEFAULT TRUE,
+    CONSTRAINT fk_productos_marcas FOREIGN KEY (id_marca) 
+        REFERENCES marcas(id_marca) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_productos_categorias FOREIGN KEY (id_categoria) 
+        REFERENCES categorias(id_categoria) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 8. TABLA: PEDIDOS (Importe total diferenciado y dirección histórica de entrega)
+-- ----------------------------------------------------------------------------
+CREATE TABLE pedidos (
+    id_pedido INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    importe_total_pedido INT NOT NULL CHECK (importe_total_pedido > 0),
+    descripcion_estado_pedido VARCHAR(50) NOT NULL DEFAULT 'Pendiente de Despacho',
+    direccion_despacho_historica VARCHAR(200) NOT NULL,
+    CONSTRAINT fk_pedidos_usuarios FOREIGN KEY (id_usuario) 
+        REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 9. TABLA: DETALLES_PEDIDO (Subtotal de línea diferenciado)
+-- ----------------------------------------------------------------------------
+CREATE TABLE detalles_pedido (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    id_pedido INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad_unidades INT NOT NULL CHECK (cantidad_unidades > 0),
+    precio_unitario_venta INT NOT NULL CHECK (precio_unitario_venta > 0),
+    subtotal_linea INT NOT NULL CHECK (subtotal_linea > 0),
+    CONSTRAINT fk_detalles_pedidos FOREIGN KEY (id_pedido) 
+        REFERENCES pedidos(id_pedido) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_detalles_productos FOREIGN KEY (id_producto) 
+        REFERENCES productos(id_producto) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+-- ----------------------------------------------------------------------------
+-- 10. TABLA: FAVORITOS
+-- ----------------------------------------------------------------------------
+CREATE TABLE favoritos (
+    id_usuario INT NOT NULL,
+    id_producto INT NOT NULL,
+    fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_usuario, id_producto),
+    CONSTRAINT fk_favoritos_usuarios FOREIGN KEY (id_usuario) 
+        REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_favoritos_productos FOREIGN KEY (id_producto) 
+        REFERENCES productos(id_producto) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ============================================================================
+-- POBLADO DE DATOS DE PRUEBA
+-- ============================================================================
+
+-- Roles solicitados con la especificación de permisos
+INSERT INTO roles (nombre_rol, descripcion_permisos) VALUES 
+('usuario_sin_registrar', 'Solo puede navegar por el sitio y ver el catalogo. No puede comprar ni acceder al panel admin.'),
+('usuario_registrado', 'Puede navegar, ver catalogo, agregar a favoritos y realizar pedidos de compra. No puede acceder al panel admin.'),
+('admin', 'Gestiona inventario (CRUD de productos creados). No puede realizar pedidos de compra.');
+
+-- Marcas
+INSERT INTO marcas (nombre_marca) VALUES 
+('Abastible'), 
+('Gasco'), 
+('Lipigas');
+
+-- Categorías
+INSERT INTO categorias (nombre_categoria) VALUES 
+('Gas Licuado'), 
+('Accesorio / Extra');
+
+-- Usuarios representativos
+INSERT INTO usuarios (id_rol, username, email, password, primer_nombre, segundo_nombre, apellido_paterno, apellido_materno, fecha_nacimiento) VALUES
+(3, 'admin', 'admin@duocuc.cl', 'admin123', 'Nicolás', 'Benjamín', 'Fiedler', 'Parra', '1995-05-15'),
+(2, 'cliente1', 'cliente@duocuc.cl', 'cliente123', 'Juan', 'Carlos', 'Pérez', 'González', '1998-10-20'),
+(1, 'invitado_anonimo', 'visitante@duocuc.cl', 'guest123', 'Usuario', 'Temporal', 'Sin', 'Registrar', '2000-01-01');
+
+-- Historial de direcciones del cliente registrado
+INSERT INTO direcciones_usuario (id_usuario, calle_y_numero, villa_o_poblacion, comuna, ciudad, es_direccion_actual) VALUES
+(2, 'Calle Gamero 120, Dpto 4', 'Sector Centro', 'Chillán', 'Chillán', FALSE),
+(2, 'Av. Bernardo O''Higgins 450', 'Villa Los Volcanes', 'Chillán', 'Chillán', TRUE);
+
+-- Perfil logístico del cliente
+INSERT INTO perfiles_cliente (id_usuario, descripcion_tipo_consumo, descripcion_horario_entrega, descripcion_tipo_valvula, descripcion_condicion_envase, telefono_contacto) VALUES
+(2, 'Residencial (Hogar)', 'Mañana (09:00 - 13:00)', 'Válvula Tradicional (Clip)', 'Con intercambio de cilindro vacío', '+56912345678');
+
+-- Catálogo de productos
+INSERT INTO productos (id_marca, id_categoria, nombre_producto, descripcion_producto, precio, imagen_url, stock_disponible, es_personalizado) VALUES
+-- Abastible
+(1, 1, 'Balón Abastible 5 KG', 'Ideal para camping o estufas pequeñas.', 12500, '/img/a5k.jpg', 40, FALSE),
+(1, 1, 'Balón Abastible 11 KG', 'Uso domiciliario estándar para cocina.', 21500, '/img/a11k.jpg', 60, FALSE),
+(1, 1, 'Balón Abastible 15 KG', 'El más popular para calefón y calefacción.', 28000, '/img/a15k.jpg', 50, FALSE),
+(1, 1, 'Balón Abastible 45 KG', 'Uso intensivo y comercial de alta demanda.', 75000, '/img/a45k.jpg', 20, FALSE),
+(1, 2, 'Regulador de Gas Abastible', 'Regulador de alta precisión con flexible.', 14990, '/img/logo.png', 30, FALSE),
+
+-- Gasco
+(2, 1, 'Balón Gasco 5 KG', 'Compacto y liviano para espacios reducidos.', 12900, '/img/g5k.jpg', 35, FALSE),
+(2, 1, 'Balón Gasco 11 KG', 'Balón óptimo para cocina tradicional.', 21900, '/img/g11k.jpg', 55, FALSE),
+(2, 1, 'Balón Gasco 15 KG', 'Gran rendimiento para hogares familiares.', 28500, '/img/g15k.jpg', 45, FALSE),
+(2, 1, 'Balón Gasco 45 KG', 'Máxima capacidad para calefacción central.', 76000, '/img/g45k.jpg', 15, FALSE),
+(2, 2, 'Manguera Certificada Gasco', 'Flexible de alta presión norma SEC.', 8990, '/img/logo.png', 40, FALSE),
+
+-- Lipigas
+(3, 1, 'Balón Lipigas 5 KG', 'Balón amarillo formato transportable.', 12700, '/img/l5k.jpg', 30, FALSE),
+(3, 1, 'Balón Lipigas 11 KG', 'Excelente poder calorífico domiciliario.', 21800, '/img/l11k.jpg', 50, FALSE),
+(3, 1, 'Balón Lipigas 15 KG', 'El preferido para invierno y duchas.', 28200, '/img/l15k.jpg', 50, FALSE),
+(3, 1, 'Balón Lipigas 45 KG', 'Cilindro industrial para gastronomía y hogar.', 75500, '/img/l45k.jpg', 20, FALSE),
+(3, 2, 'Llave de Paso Lipigas', 'Válvula de seguridad reforzada.', 9990, '/img/logo.png', 25, FALSE);
